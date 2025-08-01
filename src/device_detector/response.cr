@@ -46,7 +46,7 @@ module DeviceDetector
           def {{key.id}}? : Bool
             @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?
           end
-          
+
           def {{key.id}} : String?
             @section[{{key}}]?
           end
@@ -69,7 +69,7 @@ module DeviceDetector
             return {{class_name.id}}.new(result[{{entity_name.stringify}}])
           end
         end
-        
+
         {{class_name.id}}.new({} of String => String)
       end
 
