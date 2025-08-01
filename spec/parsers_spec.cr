@@ -115,7 +115,7 @@ describe "In the parsers" do
       detector = DeviceDetector::Parser::OS.new user_agent
       result = detector.call
       result["name"].should eq "Fedora"
-      result["version"].should eq "1.9.0.8"
+      result["version"].should eq "10"
     end
   end
 

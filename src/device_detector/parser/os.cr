@@ -3,10 +3,17 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "os"
-    @@os = Array(OS).from_yaml(Storage.get("oss.yml"))
+    @@os : Array(OS)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
+    end
+
+    struct VersionRule
+      include YAML::Serializable
+
+      property regex : String
+      property version : String
     end
 
     struct OS
@@ -14,12 +21,12 @@ module DeviceDetector::Parser
 
       property regex : String
       property name : String
-      property version : String
+      property version : String?
+      property versions : Array(VersionRule)?
     end
 
     def os
-      return @@os if @@os
-      @@os = Array(OS).from_yaml(Storage.get("oss.yml"))
+      @@os ||= Array(OS).from_yaml(Storage.get("oss.yml"))
     end
 
     def call
@@ -33,13 +40,32 @@ module DeviceDetector::Parser
           else
             detected_os.merge!({"name" => operation_system.name})
           end
-          # If version contains capture groups
-          if capture_groups?(operation_system.version)
-            version = fill_groups(operation_system.version, operation_system.regex, @user_agent)
-            detected_os.merge!({"version" => version})
-          else
-            detected_os.merge!({"version" => operation_system.version})
+
+          # Handle version detection
+          version = ""
+
+          # Check if we have version rules
+          if versions = operation_system.versions
+            versions.reverse_each do |version_rule|
+              if Regex.new(version_rule.regex, Setting::REGEX_OPTS) =~ @user_agent
+                if capture_groups?(version_rule.version)
+                  version = fill_groups(version_rule.version, version_rule.regex, @user_agent)
+                else
+                  version = version_rule.version
+                end
+                break
+              end
+            end
+          elsif version_str = operation_system.version
+            # Handle single version field
+            if capture_groups?(version_str.not_nil!)
+              version = fill_groups(version_str.not_nil!, operation_system.regex, @user_agent)
+            else
+              version = version_str.not_nil!
+            end
           end
+
+          detected_os.merge!({"version" => version})
         end
       end
       detected_os

@@ -169,7 +169,7 @@ describe "Response" do
       response.os.name.should eq "Fedora"
     end
     it "should return version" do
-      response.os.version.should eq "1.9.0.8"
+      response.os.version.should eq "10"
     end
   end
 
