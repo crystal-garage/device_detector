@@ -169,7 +169,22 @@ describe "Response" do
       response.os.name.should eq "Fedora"
     end
     it "should return version" do
-      response.os.version.should eq "1.9.0.8"
+      response.os.version.should eq "10"
+    end
+  end
+
+  describe "Android SDK Level Api" do
+    describe "API Level 34" do
+      user_agent = "Mozilla/5.0 (Linux; Android API 34) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      response = DeviceDetector::Detector.new(user_agent).call
+
+      it "should return true if OS detected" { response.os?.should be_true }
+      it "should return Android name" do
+        response.os.name.should eq "Android"
+      end
+      it "should return Android version 14 for API 34" do
+        response.os.version.should eq "14"
+      end
     end
   end
 
