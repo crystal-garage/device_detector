@@ -108,7 +108,7 @@ module DeviceDetector
 
     # `to.click` related method
     def traffic_type
-      if [library?, bot?].any? { |m| m == true }
+      if [library?, bot?].any?(true)
         "bot"
       else
         "human"

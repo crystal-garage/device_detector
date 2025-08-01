@@ -22,9 +22,7 @@ module DeviceDetector
       path = path.strip
       path = "/" + path unless path.starts_with?("/")
 
-      file = @@files.find do |file|
-        file.path == path
-      end
+      file = @@files.find(&.path.==(path))
 
       return nil unless file
 

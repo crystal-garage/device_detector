@@ -14,8 +14,8 @@ module DeviceDetector
       new_str = str
 
       keys.each do |key|
-        index = key[1]?.not_nil!.delete("$").to_i
-        place = key[1]?.not_nil!
+        index = key[1].delete("$").to_i
+        place = key[1]
         filler = values.try &.[index]?.to_s
         new_str = new_str.gsub(place, filler)
       end
