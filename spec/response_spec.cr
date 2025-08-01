@@ -173,6 +173,21 @@ describe "Response" do
     end
   end
 
+  describe "Android SDK Level Api" do
+    describe "API Level 34" do
+      user_agent = "Mozilla/5.0 (Linux; Android API 34) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      response = DeviceDetector::Detector.new(user_agent).call
+
+      it "should return true if OS detected" { response.os?.should be_true }
+      it "should return Android name" do
+        response.os.name.should eq "Android"
+      end
+      it "should return Android version 14 for API 34" do
+        response.os.version.should eq "14"
+      end
+    end
+  end
+
   describe "PIM" do
     user_agent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Win64; x64; Trident/7.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; InfoPath.3; .NET CLR 1.1.4322; FDM; Tablet PC 2.0; .NET4.0E; Microsoft Outlook 14.0.7113; ms-office; MSOffice 14)"
     response = DeviceDetector::Detector.new(user_agent).call
