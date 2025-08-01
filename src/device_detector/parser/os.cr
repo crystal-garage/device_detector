@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "os"
-    @@os : Array(OS)?
+    @@oss : Array(OS)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -25,27 +25,27 @@ module DeviceDetector::Parser
       property versions : Array(VersionRule)?
     end
 
-    def os
-      @@os ||= Array(OS).from_yaml(Storage.get("oss.yml"))
+    def oss
+      @@oss ||= Array(OS).from_yaml(Storage.get("oss.yml"))
     end
 
     def call
       detected_os = {"name" => "", "version" => ""}
-      os.reverse_each do |operation_system|
-        if Regex.new(operation_system.regex, Setting::REGEX_OPTS) =~ @user_agent
+      oss.reverse_each do |os|
+        if Regex.new(os.regex, Setting::REGEX_OPTS) =~ @user_agent
           # If name contains capture groups
-          if capture_groups?(operation_system.name)
-            name = fill_groups(operation_system.name, operation_system.regex, @user_agent)
+          if capture_groups?(os.name)
+            name = fill_groups(os.name, os.regex, @user_agent)
             detected_os.merge!({"name" => name})
           else
-            detected_os.merge!({"name" => operation_system.name})
+            detected_os.merge!({"name" => os.name})
           end
 
           # Handle version detection
           version = ""
 
           # Check if we have version rules
-          if versions = operation_system.versions
+          if versions = os.versions
             versions.reverse_each do |version_rule|
               if Regex.new(version_rule.regex, Setting::REGEX_OPTS) =~ @user_agent
                 if capture_groups?(version_rule.version)
@@ -56,10 +56,10 @@ module DeviceDetector::Parser
                 break
               end
             end
-          elsif version_str = operation_system.version
+          elsif version_str = os.version
             # Handle single version field
             if capture_groups?(version_str)
-              version = fill_groups(version_str, operation_system.regex, @user_agent)
+              version = fill_groups(version_str, os.regex, @user_agent)
             else
               version = version_str
             end
