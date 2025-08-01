@@ -58,10 +58,10 @@ module DeviceDetector::Parser
             end
           elsif version_str = operation_system.version
             # Handle single version field
-            if capture_groups?(version_str.not_nil!)
-              version = fill_groups(version_str.not_nil!, operation_system.regex, @user_agent)
+            if capture_groups?(version_str)
+              version = fill_groups(version_str, operation_system.regex, @user_agent)
             else
-              version = version_str.not_nil!
+              version = version_str
             end
           end
 
