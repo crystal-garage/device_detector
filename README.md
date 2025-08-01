@@ -1,6 +1,6 @@
 # Device Detector
 
-[![Build Status](https://travis-ci.org/creadone/device_detector.svg?branch=master)](https://travis-ci.org/creadone/device_detector)
+[![Crystal CI](https://github.com/mamantoha/device_detector/actions/workflows/crystal.yml/badge.svg?branch=develop)](https://github.com/mamantoha/device_detector/actions/workflows/crystal.yml)
 
 The library for parsing User Agent and browser, operating system, device used (desktop, tablet, mobile, tv, cars, console, etc.), vendor and model detection.
 
