@@ -3,67 +3,65 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "console"
-    @@consoles = Hash(String, MultiModelConsole | SingleModelConsole).from_yaml(Storage.get("consoles.yml"))
+    @@consoles : Hash(String, ConsoleVendor)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
     end
 
-    struct SingleModelConsole
+    struct ConsoleModel
       include YAML::Serializable
 
       property regex : String
-      property device : String?
       property model : String
     end
 
-    struct MultiModelConsole
+    struct ConsoleVendor
       include YAML::Serializable
 
       property regex : String
       property device : String
-      property models : Array(SingleModelConsole)
+      property model : String?
+      property models : Array(ConsoleModel)?
     end
 
     def consoles
-      return @@consoles if @@consoles
-      @@consoles = Hash(String, MultiModelConsole | SingleModelConsole).from_yaml(Storage.get("consoles.yml"))
+      @@consoles ||= Hash(String, ConsoleVendor).from_yaml(Storage.get("device/consoles.yml"))
     end
 
     def call
       detected_console = {"vendor" => "", "model" => ""}
-      consoles.each do |console|
-        vendor = console[0]
-        device = console[1]
+      consoles.each do |vendor_name, vendor_data|
+        # Check if the main regex matches
+        if Regex.new(vendor_data.regex, Setting::REGEX_OPTS) =~ @user_agent
+          detected_console.merge!({"vendor" => vendor_name})
 
-        # --> If device has many models
-        if device.is_a?(MultiModelConsole)
-          if Regex.new(device.regex) =~ @user_agent
-            device.models.each do |model|
-              if Regex.new(model.regex, Setting::REGEX_OPTS) =~ @user_agent
-                detected_console.merge!({"vendor" => vendor})
-                if capture_groups?(model.model)
-                  filled_name = fill_groups(model.model, model.regex, @user_agent)
-                  detected_console.merge!({"model" => filled_name})
+          # Handle version detection
+          model = ""
+
+          # Check if we have model rules
+          if models = vendor_data.models
+            models.reverse_each do |model_rule|
+              if Regex.new(model_rule.regex, Setting::REGEX_OPTS) =~ @user_agent
+                if capture_groups?(model_rule.model)
+                  model = fill_groups(model_rule.model, model_rule.regex, @user_agent)
                 else
-                  detected_console.merge!({"model" => model.model})
+                  model = model_rule.model
                 end
+                break
               end
             end
-          end
-        end
-
-        # --> If device has many models
-        if device.is_a?(SingleModelConsole)
-          if Regex.new(device.regex, Setting::REGEX_OPTS) =~ @user_agent
-            detected_console.merge!({"vendor" => vendor})
-            if capture_groups?(device.model)
-              filled_name = fill_groups(device.model, device.regex, @user_agent)
-              detected_console.merge!({"model" => filled_name})
+          elsif model_str = vendor_data.model
+            # Handle single model field
+            if capture_groups?(model_str)
+              model = fill_groups(model_str, vendor_data.regex, @user_agent)
             else
-              detected_console.merge!({"model" => device.model})
+              model = model_str
             end
           end
+
+          detected_console.merge!({"model" => model})
+          break
         end
       end
       detected_console
