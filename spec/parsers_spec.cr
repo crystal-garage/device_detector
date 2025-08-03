@@ -19,12 +19,60 @@ describe "In the parsers" do
   end
 
   describe "Browser" do
-    it "shoud extract browser name and version" do
+    it "should extract browser name and version" do
       user_agent = "Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36 Edge/12.0"
       detector = DeviceDetector::Parser::Browser.new user_agent
       result = detector.call
       result["name"].should eq "Microsoft Edge"
       result["version"].should eq "12.0"
+    end
+
+    it "should handle browser with no version" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Browser.new user_agent
+      result = detector.call
+      result["name"].should eq "Chrome"
+      result["version"].should eq "120.0.0.0"
+    end
+
+    it "should handle browser with capture groups in version" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Browser.new user_agent
+      result = detector.call
+      result["name"].should eq "Chrome"
+      result["version"].should eq "120.0.0.0"
+    end
+
+    it "should handle unknown browser gracefully" do
+      user_agent = "SomeUnknownBrowser/1.0"
+      detector = DeviceDetector::Parser::Browser.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Browser.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Firefox browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"
+      detector = DeviceDetector::Parser::Browser.new user_agent
+      result = detector.call
+      result["name"].should eq "Firefox"
+      result["version"].should eq "120.0"
+    end
+
+    it "should handle Safari browser" do
+      user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15"
+      detector = DeviceDetector::Parser::Browser.new user_agent
+      result = detector.call
+      result["name"].should eq "Safari"
+      result["version"].should eq "17.1"
     end
   end
 
