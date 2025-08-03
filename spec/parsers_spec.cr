@@ -104,6 +104,70 @@ describe "In the parsers" do
       result["vendor"].should eq "Sony"
       result["model"].should eq "PlayStation 3"
     end
+
+    it "should handle PlayStation 4" do
+      user_agent = "Mozilla/5.0 (PlayStation 4 8.52) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Sony"
+      result["model"].should eq "PlayStation 4"
+    end
+
+    it "should handle PlayStation 5" do
+      user_agent = "Mozilla/5.0 (PlayStation 5 9.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Sony"
+      result["model"].should eq "PlayStation 5"
+    end
+
+    it "should handle Xbox 360" do
+      user_agent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; Xbox)"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Microsoft"
+      result["model"].should eq "Xbox 360"
+    end
+
+    it "should handle Nintendo Switch" do
+      user_agent = "Mozilla/5.0 (Nintendo Switch; WifiWebAuthApplet) AppleWebKit/601.6 (KHTML, like Gecko) NF/6.0.0.11.1632 NintendoBrowser/5.79.11201.US"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Nintendo"
+      result["model"].should eq "Switch"
+    end
+
+    it "should handle Nintendo 3DS" do
+      user_agent = "Mozilla/5.0 (Nintendo 3DS; U; ; en) Version/1.7560.US"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Nintendo"
+      result["model"].should eq "3DS"
+    end
+
+    it "should handle unknown console gracefully" do
+      user_agent = "SomeUnknownConsole/1.0"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle regular browser user agent" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Console.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
   end
 
   describe "FeedReader" do
