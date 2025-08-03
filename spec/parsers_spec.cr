@@ -3,10 +3,74 @@ require "../src/device_detector/parser"
 
 describe "In the parsers" do
   describe "Bot" do
-    it "should extract bot name" do
-      user_agent = "Googlebot (gocrawl v0.4)"
+    it "should extract name" do
+      user_agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
       detector = DeviceDetector::Parser::Bot.new user_agent
-      detector.call["name"].should eq "Googlebot"
+      result = detector.call
+      result["name"].should eq "Googlebot"
+    end
+
+    it "should handle Bingbot" do
+      user_agent = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq "BingBot"
+    end
+
+    it "should handle Facebook bot" do
+      user_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq "Facebook Crawler"
+    end
+
+    it "should handle Twitter bot" do
+      user_agent = "Twitterbot/1.0"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq "Twitterbot"
+    end
+
+    it "should handle LinkedIn bot" do
+      user_agent = "LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq "LinkedIn Bot"
+    end
+
+    it "should handle WhatsApp bot" do
+      user_agent = "WhatsApp/2.19.81 A"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle unknown bot gracefully" do
+      user_agent = "SomeUnknownBot/1.0"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq "Generic Bot"
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle regular human browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle bot with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+      detector = DeviceDetector::Parser::Bot.new user_agent
+      result = detector.call
+      result["name"].should eq "Googlebot"
     end
   end
 
