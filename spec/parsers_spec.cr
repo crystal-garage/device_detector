@@ -229,6 +229,86 @@ describe "In the parsers" do
       result["name"].should eq "Fedora"
       result["version"].should eq "10"
     end
+
+    it "should handle Windows 10" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "Windows"
+      result["version"].should eq "10"
+    end
+
+    it "should handle Windows 11" do
+      user_agent = "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "Windows"
+      result["version"].should eq "NT"
+    end
+
+    it "should handle macOS" do
+      user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "Mac"
+      result["version"].should eq "10_15_7"
+    end
+
+    it "should handle iOS" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "iOS"
+      result["version"].should eq "17_1"
+    end
+
+    it "should handle Android with API level" do
+      user_agent = "Mozilla/5.0 (Linux; Android API 34) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "Android"
+      result["version"].should eq "14"
+    end
+
+    it "should handle Android with version" do
+      user_agent = "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "Android"
+      result["version"].should eq "13"
+    end
+
+    it "should handle Ubuntu" do
+      user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "Ubuntu"
+      result["version"].should eq ""
+    end
+
+    it "should handle unknown OS gracefully" do
+      user_agent = "SomeUnknownOS/1.0"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle OS with capture groups" do
+      user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::OS.new user_agent
+      result = detector.call
+      result["name"].should eq "GNU/Linux"
+      result["version"].should eq ""
+    end
   end
 
   describe "PIM" do
