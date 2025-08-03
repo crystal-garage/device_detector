@@ -3,10 +3,16 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "browser"
-    @@browsers = Array(Browser).from_yaml(Storage.get("browsers.yml"))
+    @@browsers : Array(Browser)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
+    end
+
+    struct BrowserEngine
+      include YAML::Serializable
+
+      property default : String?
     end
 
     struct Browser
@@ -15,11 +21,11 @@ module DeviceDetector::Parser
       property regex : String
       property name : String
       property version : (String | Int32 | Float32)?
+      property engine : BrowserEngine?
     end
 
     def browsers
-      return @@browsers if @@browsers
-      @@browsers = Array(Browser).from_yaml(Storage.get("browsers.yml"))
+      @@browsers ||= Array(Browser).from_yaml(Storage.get("client/browsers.yml"))
     end
 
     def call
