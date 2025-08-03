@@ -412,12 +412,68 @@ describe "In the parsers" do
       result["model"].should eq "HE65M7000UWTS"
     end
 
-    it "should not have vendor or model of tv for browser UA" do
-      user_agent = "Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36 Edge/12.0"
+    it "should handle Samsung Smart TV" do
+      user_agent = "Mozilla/5.0 (SMART-TV; Linux; Tizen 7.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       detector = DeviceDetector::Parser::Television.new user_agent
       result = detector.call
       result["vendor"].should eq ""
       result["model"].should eq ""
+    end
+
+    it "should handle LG Smart TV" do
+      user_agent = "Mozilla/5.0 (WebOS; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Sony Smart TV" do
+      user_agent = "Mozilla/5.0 (Linux; Android 9; BRAVIA 4K VH2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Apple TV" do
+      user_agent = "Mozilla/5.0 (Apple TV; CPU OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle unknown TV device gracefully" do
+      user_agent = "SomeUnknownTV/1.0"
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle regular desktop browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle TV device with capture groups" do
+      user_agent = "Opera/9.80 (Linux armv7l; HbbTV/1.2.1 (; Hisense; SmartTV_2015; V00.01.00a.G0816; HE65M7000UWTSG; )) Presto/2.12.407 Version/12.51 year/2016"
+      detector = DeviceDetector::Parser::Television.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Hisense"
+      result["model"].should eq "HE65M7000UWTS"
     end
   end
 
