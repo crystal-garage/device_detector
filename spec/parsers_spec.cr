@@ -219,6 +219,78 @@ describe "In the parsers" do
       result["model"].should eq "BV6000"
       result["type"].should eq "smartphone"
     end
+
+    it "should handle iPhone" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Apple"
+      result["model"].should eq "iPhone "
+      result["type"].should eq ""
+    end
+
+    it "should handle iPad" do
+      user_agent = "Mozilla/5.0 (iPad; CPU OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Apple"
+      result["model"].should eq "iPad"
+      result["type"].should eq ""
+    end
+
+    it "should handle Samsung Galaxy" do
+      user_agent = "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Samsung"
+      result["model"].should eq "SM-G991B"
+      result["type"].should eq "smartphone"
+    end
+
+    it "should handle Google Pixel" do
+      user_agent = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Google"
+      result["model"].should eq "Pixel 8"
+      result["type"].should eq "smartphone"
+    end
+
+    it "should handle unknown mobile device gracefully" do
+      user_agent = "SomeUnknownMobile/1.0"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"]?.should eq ""
+      result["type"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"]?.should eq ""
+      result["type"].should eq ""
+    end
+
+    it "should handle regular desktop browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"]?.should eq ""
+      result["type"].should eq ""
+    end
+
+    it "should handle mobile device with capture groups" do
+      user_agent = "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::Mobile.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Samsung"
+      result["model"].should eq "SM-G991B"
+      result["type"].should eq "smartphone"
+    end
   end
 
   describe "OS" do
