@@ -24,7 +24,7 @@ module DeviceDetector::Parser
     def call
       detected_pim = {"name" => "", "version" => ""}
       pims.reverse_each do |pim|
-        if Regex.new(pim.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(pim.regex) =~ @user_agent
           detected_pim.merge!({"name" => pim.name})
           if version = pim.version
             if capture_groups?(version)

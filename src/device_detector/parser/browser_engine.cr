@@ -25,7 +25,7 @@ module DeviceDetector::Parser
       detected_engine = {"name" => ""}
       if engines_array = engines
         engines_array.reverse_each do |engine|
-          if Regex.new(engine.regex, Setting::REGEX_OPTS) =~ @user_agent
+          if RegexCache.get(engine.regex) =~ @user_agent
             detected_engine.merge!({"name" => engine.name})
           end
         end

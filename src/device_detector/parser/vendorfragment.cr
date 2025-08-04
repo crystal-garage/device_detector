@@ -19,7 +19,7 @@ module DeviceDetector::Parser
         vendor = fragment[0]
         regexes = fragment[1]
         regexes.each do |regex|
-          if Regex.new(regex, Setting::REGEX_OPTS) =~ @user_agent
+          if RegexCache.get(regex) =~ @user_agent
             detected_vendor.merge!({"vendor" => vendor})
           end
         end

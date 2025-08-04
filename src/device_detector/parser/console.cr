@@ -33,7 +33,7 @@ module DeviceDetector::Parser
       detected_console = {"vendor" => "", "model" => ""}
       consoles.each do |vendor_name, vendor_data|
         # Check if the main regex matches
-        if Regex.new(vendor_data.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(vendor_data.regex) =~ @user_agent
           detected_console.merge!({"vendor" => vendor_name})
 
           # Handle version detection
@@ -42,7 +42,7 @@ module DeviceDetector::Parser
           # Check if we have model rules
           if models = vendor_data.models
             models.reverse_each do |model_rule|
-              if Regex.new(model_rule.regex, Setting::REGEX_OPTS) =~ @user_agent
+              if RegexCache.get(model_rule.regex) =~ @user_agent
                 if capture_groups?(model_rule.model)
                   model = fill_groups(model_rule.model, model_rule.regex, @user_agent)
                 else

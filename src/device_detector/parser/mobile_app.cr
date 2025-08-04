@@ -24,7 +24,7 @@ module DeviceDetector::Parser
     def call
       detected_app = {"name" => "", "version" => ""}
       apps.reverse_each do |app|
-        if Regex.new(app.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(app.regex) =~ @user_agent
           detected_app.merge!({"name" => app.name})
           if version = app.version
             if capture_groups?(version)

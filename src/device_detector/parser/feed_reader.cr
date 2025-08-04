@@ -24,7 +24,7 @@ module DeviceDetector::Parser
     def call
       detected_reader = {"name" => "", "version" => ""}
       readers.reverse_each do |reader|
-        if Regex.new(reader.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(reader.regex) =~ @user_agent
           detected_reader.merge!({"name" => reader.name})
           if version = reader.version
             if capture_groups?(version)
