@@ -28,8 +28,8 @@ Then run `shards install`
 require "device_detector"
 
 user_agent = "Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36 Edge/12.0"
-response = DeviceDetector::Detector.new(user_agent).call  # All parsers
-response = DeviceDetector::Detector.new(user_agent).lite  # Only for bot and mobile
+
+response = DeviceDetector::Detector.new(user_agent).call
 
 # Check if browser detected
 response.browser? #=> true
@@ -43,26 +43,22 @@ response.browser_version #=> 12.0
 # get raw response with
 pp response.raw
 
-[{
-    "bot" => {
-      "name" => ""
-    }
-  },
-  {
-    "browser" => {
-      "name" => "", "version" => ""
-    }
-  },
-
-  {...},
-
-  {
-    "vendorfragment" => {
-      "vendor" => ""
-    }
-  }
-]
-
+[{"bot" => {"name" => ""}},
+ {"browser" => {"name" => "Microsoft Edge", "version" => "12.0"}},
+ {"browser_engine" => {"name" => "Edge"}},
+ {"camera" => {"vendor" => "", "model" => "", "device" => ""}},
+ {"car_browser" => {"vendor" => "", "device" => "", "model" => ""}},
+ {"console" => {"vendor" => "", "model" => ""}},
+ {"feed_reader" => {"name" => "", "version" => ""}},
+ {"library" => {"name" => "", "version" => ""}},
+ {"mediaplayer" => {"name" => "", "version" => ""}},
+ {"mobile_app" => {"name" => "", "version" => ""}},
+ {"mobile" => {"device" => "", "vendor" => "", "type" => ""}},
+ {"os" => {"name" => "Windows", "version" => "10"}},
+ {"pim" => {"name" => "", "version" => ""}},
+ {"portable_media_player" => {"vendor" => "", "model" => ""}},
+ {"tv" => {"model" => "", "vendor" => ""}},
+ {"vendorfragment" => {"vendor" => ""}}]
 ```
 
 Available methods:
