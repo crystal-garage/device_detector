@@ -101,10 +101,10 @@ LLVM: 8.0.1
 Default target: x86_64-apple-macosx
 
 ```
-bench/raw_response.cr --release
+crystal run ./bench/raw_response.cr --release
             user     system      total        real
-full:   5.880000   0.060000   5.940000 (  5.940340)
-lite:   3.880000   0.040000   3.920000 (  3.953958)
+full:   41.125270   2.457481   43.582751 (  44.714081)
+lite:   25.293438   1.403468   26.696906 (  26.829565)
 ```
 
 It's mean that `device_detector` can work with 1000 / 5.9 ~ 169 QPS.
