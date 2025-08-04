@@ -3,15 +3,14 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "vendorfragment"
-    @@fragments = Hash(String, Array(String)).from_yaml(Storage.get("vendorfragments.yml"))
+    @@fragments : Hash(String, Array(String))?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
     end
 
     def fragments
-      return @@fragments if @@fragments
-      @@fragments = Hash(String, Array(String)).from_yaml(Storage.get("vendorfragments.yml"))
+      @@fragments ||= Hash(String, Array(String)).from_yaml(Storage.get("vendorfragments.yml"))
     end
 
     def call
@@ -20,7 +19,7 @@ module DeviceDetector::Parser
         vendor = fragment[0]
         regexes = fragment[1]
         regexes.each do |regex|
-          if Regex.new(regex, Setting::REGEX_OPTS) =~ @user_agent
+          if RegexCache.get(regex) =~ @user_agent
             detected_vendor.merge!({"vendor" => vendor})
           end
         end

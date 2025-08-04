@@ -32,7 +32,7 @@ module DeviceDetector::Parser
     def call
       detected_os = {"name" => "", "version" => ""}
       oss.reverse_each do |os|
-        if Regex.new(os.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(os.regex) =~ @user_agent
           # If name contains capture groups
           if capture_groups?(os.name)
             name = fill_groups(os.name, os.regex, @user_agent)
@@ -47,7 +47,7 @@ module DeviceDetector::Parser
           # Check if we have version rules
           if versions = os.versions
             versions.reverse_each do |version_rule|
-              if Regex.new(version_rule.regex, Setting::REGEX_OPTS) =~ @user_agent
+              if RegexCache.get(version_rule.regex) =~ @user_agent
                 if capture_groups?(version_rule.version)
                   version = fill_groups(version_rule.version, version_rule.regex, @user_agent)
                 else

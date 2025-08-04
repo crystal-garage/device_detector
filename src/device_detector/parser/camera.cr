@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "camera"
-    @@cameras = Hash(String, SingleModel | MultiModel).from_yaml(Storage.get("cameras.yml"))
+    @@cameras : Hash(String, SingleModel | MultiModel)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -28,8 +28,7 @@ module DeviceDetector::Parser
     end
 
     def cameras
-      return @@cameras if @@cameras
-      @@cameras = Hash(String, SingleModel | MultiModel).from_yaml(Storage.get("cameras.yml"))
+      @@cameras ||= Hash(String, SingleModel | MultiModel).from_yaml(Storage.get("device/cameras.yml"))
     end
 
     def call
@@ -41,9 +40,9 @@ module DeviceDetector::Parser
 
         # If device has many models
         if device.is_a?(MultiModel)
-          if Regex.new(device.regex) =~ @user_agent
+          if RegexCache.get(device.regex) =~ @user_agent
             device.models.each do |model|
-              if Regex.new(model.regex, Setting::REGEX_OPTS) =~ @user_agent
+              if RegexCache.get(model.regex) =~ @user_agent
                 detected_camera["vendor"] = vendor
                 if capture_groups?(model.name)
                   filled_name = fill_groups(model.name, model.regex, @user_agent)
@@ -58,7 +57,7 @@ module DeviceDetector::Parser
 
         # If device has one model
         if device.is_a?(SingleModel)
-          if Regex.new(device.regex, Setting::REGEX_OPTS) =~ @user_agent
+          if RegexCache.get(device.regex) =~ @user_agent
             detected_camera["vendor"] = vendor
             detected_camera["device"] = device.name
           end

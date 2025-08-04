@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "feed_reader"
-    @@readers = Array(Reader).from_yaml(Storage.get("feed_readers.yml"))
+    @@readers : Array(Reader)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -18,20 +18,21 @@ module DeviceDetector::Parser
     end
 
     def readers
-      return @@readers if @@readers
-      @@readers = Array(Reader).from_yaml(Storage.get("feed_readers.yml"))
+      @@readers ||= Array(Reader).from_yaml(Storage.get("client/feed_readers.yml"))
     end
 
     def call
       detected_reader = {"name" => "", "version" => ""}
-      readers.each do |reader|
-        if Regex.new(reader.regex, Setting::REGEX_OPTS) =~ @user_agent
+      readers.reverse_each do |reader|
+        if RegexCache.get(reader.regex) =~ @user_agent
           detected_reader.merge!({"name" => reader.name})
-          if capture_groups?(reader.version.to_s)
-            version = fill_groups(reader.version.to_s, reader.regex, @user_agent)
-            detected_reader.merge!({"version" => version.to_s})
-          else
-            detected_reader.merge!({"version" => reader.version.to_s})
+          if version = reader.version
+            if capture_groups?(version)
+              version = fill_groups(version, reader.regex, @user_agent)
+              detected_reader.merge!({"version" => version})
+            else
+              detected_reader.merge!({"version" => version})
+            end
           end
         end
       end

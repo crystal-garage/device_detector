@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "car_browser"
-    @@car_browsers = Hash(String, MultiModelBrowser | SingleModelBrowser).from_yaml(Storage.get("car_browsers.yml"))
+    @@car_browsers : Hash(String, MultiModelBrowser | SingleModelBrowser)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -35,8 +35,7 @@ module DeviceDetector::Parser
     end
 
     def car_browsers
-      return @@car_browsers if @@car_browsers
-      @@car_browsers = Hash(String, MultiModelBrowser | SingleModelBrowser).from_yaml(Storage.get("car_browsers.yml"))
+      @@car_browsers ||= Hash(String, MultiModelBrowser | SingleModelBrowser).from_yaml(Storage.get("device/car_browsers.yml"))
     end
 
     def call
@@ -47,7 +46,7 @@ module DeviceDetector::Parser
         browser = item[1]
 
         if browser.is_a?(SingleModelBrowser)
-          if Regex.new(browser.regex, Setting::REGEX_OPTS) =~ @user_agent
+          if RegexCache.get(browser.regex) =~ @user_agent
             detected_car_browser.merge!({
               "vendor" => vendor,
               "model"  => browser.model,
@@ -56,9 +55,9 @@ module DeviceDetector::Parser
         end
 
         if browser.is_a?(MultiModelBrowser)
-          if Regex.new(browser.regex) =~ @user_agent
+          if RegexCache.get(browser.regex) =~ @user_agent
             browser.models.each do |model|
-              if Regex.new(model.regex, Setting::REGEX_OPTS) =~ @user_agent
+              if RegexCache.get(model.regex) =~ @user_agent
                 detected_car_browser.merge!({"vendor" => vendor, "device" => browser.device})
                 if capture_groups?(model.model)
                   filled_name = fill_groups(model.model, model.regex, @user_agent)

@@ -94,20 +94,21 @@ Available methods:
 
 ## Benchmarks
 
-Recent benchmarking of parsing 1000 user-agent strings on a MacBook Air with Intel Core i5 dual core (0.8 Ghz per core):
+Recent benchmarking of parsing 1000 user-agent strings on a MacBook Pro (16-inch, 2021) with Apple M1 Pro (10) @ 3.23 GHz:
 
-Crystal 0.30.1 (2019-08-13)
-LLVM: 8.0.1
-Default target: x86_64-apple-macosx
+Crystal 1.17.1 (2025-07-22)
+
+LLVM: 20.1.8
+Default target: aarch64-apple-darwin24.5.0
 
 ```
-bench/raw_response.cr --release
+crystal run ./bench/raw_response.cr --release
             user     system      total        real
-full:   5.880000   0.060000   5.940000 (  5.940340)
-lite:   3.880000   0.040000   3.920000 (  3.953958)
+full:   1.853304   0.029943   1.883247 (  1.888252)
+lite:   0.812779   0.009052   0.821831 (  0.823737)
 ```
 
-It's mean that `device_detector` can work with 1000 / 5.9 ~ 169 QPS.
+It's mean that `device_detector` can work with 1000 / 1.89 ~ 529 QPS (full) and 1000 / 0.82 ~ 1219 QPS (lite).
 
 ## Testing
 

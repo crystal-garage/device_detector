@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "portable_media_player"
-    @@media_players = Hash(String, SingleModelPlayer | MultiModelPlayer).from_yaml(Storage.get("portable_media_player.yml"))
+    @@media_players : Hash(String, SingleModelPlayer | MultiModelPlayer)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -26,8 +26,7 @@ module DeviceDetector::Parser
     end
 
     def media_players
-      return @@media_players if @@media_players
-      @@media_players = Hash(String, SingleModelPlayer | MultiModelPlayer).from_yaml(Storage.get("portable_media_player.yml"))
+      @@media_players ||= Hash(String, SingleModelPlayer | MultiModelPlayer).from_yaml(Storage.get("device/portable_media_player.yml"))
     end
 
     def call
@@ -38,9 +37,9 @@ module DeviceDetector::Parser
 
         # --> If device has many models
         if device.is_a?(MultiModelPlayer)
-          if Regex.new(device.regex) =~ @user_agent
+          if RegexCache.get(device.regex) =~ @user_agent
             device.models.each do |model|
-              if Regex.new(model.regex, Setting::REGEX_OPTS) =~ @user_agent
+              if RegexCache.get(model.regex) =~ @user_agent
                 # Fill known keys
                 detected_player.merge!({"vendor" => vendor})
                 # If model name contains capture groups
@@ -57,7 +56,7 @@ module DeviceDetector::Parser
 
         # --> If device has one model
         if device.is_a?(SingleModelPlayer)
-          if Regex.new(device.regex) =~ @user_agent
+          if RegexCache.get(device.regex) =~ @user_agent
             # Fill known keys
             detected_player.merge!({"vendor" => vendor})
             # If model name contains capture groups

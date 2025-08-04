@@ -31,7 +31,7 @@ module DeviceDetector::Parser
     def call
       detected_browser = {"name" => "", "version" => ""}
       browsers.reverse_each do |browser|
-        if Regex.new(browser.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(browser.regex) =~ @user_agent
           detected_browser.merge!({"name" => browser.name})
           if version = browser.version
             if capture_groups?(version.to_s)
