@@ -94,11 +94,12 @@ Available methods:
 
 ## Benchmarks
 
-Recent benchmarking of parsing 1000 user-agent strings on a MacBook Air with Intel Core i5 dual core (0.8 Ghz per core):
+Recent benchmarking of parsing 1000 user-agent strings on a MacBook Pro (16-inch, 2021) with Apple M1 Pro (10) @ 3.23 GHz:
 
-Crystal 0.30.1 (2019-08-13)
-LLVM: 8.0.1
-Default target: x86_64-apple-macosx
+Crystal 1.17.1 (2025-07-22)
+
+LLVM: 20.1.8
+Default target: aarch64-apple-darwin24.5.0
 
 ```
 crystal run ./bench/raw_response.cr --release
