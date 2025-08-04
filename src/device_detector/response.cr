@@ -73,35 +73,42 @@ module DeviceDetector
         {{class_name.id}}.new({} of String => String)
       end
 
-      # Old API support
+      # Old API support (DEPRECATED)
       {% for key, index in keys %}
+        @[Deprecated("Use `{{entity_name.id}}.{{key.id}}` instead")]
         def {{entity_name.id}}_{{key.id}}
           {{entity_name.id}}.{{key.id}}
         end
       {% end %}
     {% end %}
 
-    # Old API support
+    # Old API support (DEPRECATED)
+    @[Deprecated("Use `camera.device` instead")]
     def camera_model
       camera.device
     end
 
+    @[Deprecated("Use `mobile?` instead")]
     def mobile_device?
       mobile?
     end
 
+    @[Deprecated("Use `mobile` instead")]
     def mobile_device
       mobile
     end
 
+    @[Deprecated("Use `mobile.vendor` instead")]
     def mobile_device_vendor
       mobile.vendor
     end
 
+    @[Deprecated("Use `mobile.type` instead")]
     def mobile_device_type
       mobile.type
     end
 
+    @[Deprecated("Use `mobile.model` instead")]
     def mobile_device_model
       mobile.model
     end
