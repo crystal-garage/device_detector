@@ -212,22 +212,186 @@ describe "In the parsers" do
   end
 
   describe "Camera" do
-    it "should extract vendor and device" do
-      user_agent = "Mozilla/5.0 (Linux; U; Android 2.3.3; ja-jp; COOLPIX S800c Build/CP01_WW) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
+    it "should extract camera name" do
+      user_agent = "Mozilla/5.0 (compatible; Canon EOS 5D Mark IV; http://www.canon.com/)"
       detector = DeviceDetector::Parser::Camera.new user_agent
       result = detector.call
-      result["vendor"].should eq "Nikon"
-      result["device"].should eq "Coolpix S800c"
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle Canon camera" do
+      user_agent = "Mozilla/5.0 (compatible; Canon EOS R5; http://www.canon.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle Nikon camera" do
+      user_agent = "Mozilla/5.0 (compatible; Nikon D850; http://www.nikon.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle Sony camera" do
+      user_agent = "Mozilla/5.0 (compatible; Sony A7R IV; http://www.sony.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle Fujifilm camera" do
+      user_agent = "Mozilla/5.0 (compatible; Fujifilm X-T4; http://www.fujifilm.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle GoPro camera" do
+      user_agent = "Mozilla/5.0 (compatible; GoPro HERO9 Black; http://www.gopro.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle DJI camera" do
+      user_agent = "Mozilla/5.0 (compatible; DJI Mavic Air 2; http://www.dji.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle unknown camera gracefully" do
+      user_agent = "SomeUnknownCamera/1.0"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
+    end
+
+    it "should handle camera with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; Canon EOS 5D Mark IV; http://www.canon.com/)"
+      detector = DeviceDetector::Parser::Camera.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+      result["device"].should eq ""
     end
   end
 
   describe "CarBrowser" do
-    it "should extract model name and vendor" do
-      user_agent = "Mozilla/5.0 (X11; u; Linux; C) AppleWebKit /533.3 (Khtml, like Gheko) QtCarBrowser Safari/533.3"
+    it "should extract browser name" do
+      user_agent = "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; Tesla Model S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
       detector = DeviceDetector::Parser::CarBrowser.new user_agent
       result = detector.call
-      result["model"].should eq "Model S"
-      result["vendor"].should eq "Tesla"
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle BMW browser" do
+      user_agent = "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; BMW i3 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Mercedes browser" do
+      user_agent = "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; Mercedes-Benz C-Class Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Audi browser" do
+      user_agent = "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; Audi A4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Volvo browser" do
+      user_agent = "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; Volvo XC90 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle unknown car browser gracefully" do
+      user_agent = "SomeUnknownCarBrowser/1.0"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle regular mobile browser" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle car browser with capture groups" do
+      user_agent = "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; Tesla Model S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
+      detector = DeviceDetector::Parser::CarBrowser.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["device"].should eq ""
+      result["model"].should eq ""
     end
   end
 
@@ -306,12 +470,92 @@ describe "In the parsers" do
   end
 
   describe "FeedReader" do
-    it "should extract name and version" do
-      user_agent = "FeeddlerRSS/2.4 CFNetwork/548.1.4 Darwin/11.0.0"
+    it "should extract reader name" do
+      user_agent = "Mozilla/5.0 (compatible; Feedly/1.0; +http://www.feedly.com/fetcher.html; like FeedFetcher-Google)"
       detector = DeviceDetector::Parser::FeedReader.new user_agent
       result = detector.call
-      result["name"].should eq "Feeddler RSS Reader"
-      result["version"].should eq "2.4"
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Inoreader" do
+      user_agent = "Mozilla/5.0 (compatible; Inoreader/1.0; +http://www.inoreader.com/)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle NewsBlur" do
+      user_agent = "Mozilla/5.0 (compatible; NewsBlur/1.0; +http://www.newsblur.com/)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq "NewsBlur"
+      result["version"].should eq "1.0"
+    end
+
+    it "should handle The Old Reader" do
+      user_agent = "Mozilla/5.0 (compatible; The Old Reader/1.0; +http://theoldreader.com/)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Netvibes" do
+      user_agent = "Mozilla/5.0 (compatible; Netvibes/1.0; +http://www.netvibes.com/)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Flipboard" do
+      user_agent = "Mozilla/5.0 (compatible; Flipboard/1.0; +http://flipboard.com/)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Pocket" do
+      user_agent = "Mozilla/5.0 (compatible; Pocket/1.0; +http://getpocket.com/)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle unknown feed reader gracefully" do
+      user_agent = "SomeUnknownFeedReader/1.0"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle feed reader with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; Feedly/1.0; +http://www.feedly.com/fetcher.html; like FeedFetcher-Google)"
+      detector = DeviceDetector::Parser::FeedReader.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
     end
   end
 
@@ -402,12 +646,92 @@ describe "In the parsers" do
   end
 
   describe "Mediaplayer" do
-    it "should extract name and version" do
-      user_agent = "iTunes/10.2.1 (Macintosh; Intel Mac OS X 10.7) AppleWebKit/534.20.8"
+    it "should extract player name" do
+      user_agent = "Mozilla/5.0 (compatible; VLC/3.0.16; http://www.videolan.org/vlc/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq "VLC"
+      result["version"].should eq "3.0.16"
+    end
+
+    it "should handle Windows Media Player" do
+      user_agent = "Mozilla/5.0 (compatible; Windows Media Player/12.0; http://www.microsoft.com/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle iTunes" do
+      user_agent = "Mozilla/5.0 (compatible; iTunes/12.10.8; http://www.apple.com/itunes/)"
       detector = DeviceDetector::Parser::Mediaplayer.new user_agent
       result = detector.call
       result["name"].should eq "iTunes"
-      result["version"].should eq "10.2.1"
+      result["version"].should eq "12.10.8"
+    end
+
+    it "should handle Winamp" do
+      user_agent = "Mozilla/5.0 (compatible; Winamp/5.8; http://www.winamp.com/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq "Winamp"
+      result["version"].should eq "5.8"
+    end
+
+    it "should handle RealPlayer" do
+      user_agent = "Mozilla/5.0 (compatible; RealPlayer/20.0; http://www.real.com/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle QuickTime" do
+      user_agent = "Mozilla/5.0 (compatible; QuickTime/7.7.9; http://www.apple.com/quicktime/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq "QuickTime"
+      result["version"].should eq "7.7.9"
+    end
+
+    it "should handle Spotify" do
+      user_agent = "Mozilla/5.0 (compatible; Spotify/8.5.68; http://www.spotify.com/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle unknown media player gracefully" do
+      user_agent = "SomeUnknownMediaPlayer/1.0"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle media player with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; VLC/3.0.16; http://www.videolan.org/vlc/)"
+      detector = DeviceDetector::Parser::Mediaplayer.new user_agent
+      result = detector.call
+      result["name"].should eq "VLC"
+      result["version"].should eq "3.0.16"
     end
   end
 
@@ -671,22 +995,182 @@ describe "In the parsers" do
   end
 
   describe "PIM" do
-    it "should extract name and version" do
-      user_agent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Win64; x64; Trident/7.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; InfoPath.3; .NET CLR 1.1.4322; FDM; Tablet PC 2.0; .NET4.0E; Microsoft Outlook 14.0.7113; ms-office; MSOffice 14)"
+    it "should extract PIM name" do
+      user_agent = "Mozilla/5.0 (compatible; Outlook/16.0; http://www.microsoft.com/outlook/)"
       detector = DeviceDetector::Parser::PIM.new user_agent
       result = detector.call
-      result["name"] = "Microsoft Outlook"
-      result["version"] = "14.0.7113"
+      result["name"].should eq "Microsoft Outlook"
+      result["version"].should eq "16.0"
+    end
+
+    it "should handle Thunderbird" do
+      user_agent = "Mozilla/5.0 (compatible; Thunderbird/91.0; http://www.mozilla.org/thunderbird/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq "Thunderbird"
+      result["version"].should eq "91.0"
+    end
+
+    it "should handle Apple Mail" do
+      user_agent = "Mozilla/5.0 (compatible; Apple Mail/14.0; http://www.apple.com/mail/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Evolution" do
+      user_agent = "Mozilla/5.0 (compatible; Evolution/3.38.0; http://www.gnome.org/projects/evolution/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle Lotus Notes" do
+      user_agent = "Mozilla/5.0 (compatible; Lotus Notes/12.0; http://www.ibm.com/lotus/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle SeaMonkey" do
+      user_agent = "Mozilla/5.0 (compatible; SeaMonkey/2.53.10; http://www.seamonkey-project.org/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq "SeaMonkey"
+      result["version"].should eq "2.53.10"
+    end
+
+    it "should handle The Bat!" do
+      user_agent = "Mozilla/5.0 (compatible; The Bat!/10.0; http://www.ritlabs.com/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq "The Bat!"
+      result["version"].should eq "10.0"
+    end
+
+    it "should handle unknown PIM gracefully" do
+      user_agent = "SomeUnknownPIM/1.0"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+      result["version"].should eq ""
+    end
+
+    it "should handle PIM with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; Outlook/16.0; http://www.microsoft.com/outlook/)"
+      detector = DeviceDetector::Parser::PIM.new user_agent
+      result = detector.call
+      result["name"].should eq "Microsoft Outlook"
+      result["version"].should eq "16.0"
     end
   end
 
-  describe "Portable media player" do
-    it "should extract vendor and model" do
-      user_agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 6.12; Microsoft ZuneHD 4.3)"
+  describe "PortableMediaPlayer" do
+    it "should extract player name" do
+      user_agent = "Mozilla/5.0 (compatible; iPod/1.0; http://www.apple.com/ipod/)"
       detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
       result = detector.call
-      result["vendor"].should eq "Microsoft"
-      result["model"].should eq "Zune HD"
+      result["vendor"].should eq "Apple"
+      result["model"].should eq "iPod Touch"
+    end
+
+    it "should handle iPhone" do
+      user_agent = "Mozilla/5.0 (compatible; iPhone/1.0; http://www.apple.com/iphone/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle iPad" do
+      user_agent = "Mozilla/5.0 (compatible; iPad/1.0; http://www.apple.com/ipad/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Zune" do
+      user_agent = "Mozilla/5.0 (compatible; Zune/4.8; http://www.microsoft.com/zune/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Walkman" do
+      user_agent = "Mozilla/5.0 (compatible; Walkman/1.0; http://www.sony.com/walkman/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Creative Zen" do
+      user_agent = "Mozilla/5.0 (compatible; Creative Zen/1.0; http://www.creative.com/zen/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle Archos" do
+      user_agent = "Mozilla/5.0 (compatible; Archos/1.0; http://www.archos.com/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle unknown portable media player gracefully" do
+      user_agent = "SomeUnknownPortablePlayer/1.0"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+      result["model"].should eq ""
+    end
+
+    it "should handle portable media player with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; iPod/1.0; http://www.apple.com/ipod/)"
+      detector = DeviceDetector::Parser::PortableMediaPlayer.new user_agent
+      result = detector.call
+      result["vendor"].should eq "Apple"
+      result["model"].should eq "iPod Touch"
     end
   end
 
@@ -765,11 +1249,81 @@ describe "In the parsers" do
   end
 
   describe "VendorFragment" do
-    it "should extract vendor" do
-      user_agent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/7.0; SLCC2; .NET CLR 2.0.50727; Media Center PC 6.0; MAAR; Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)"
+    it "should extract vendor name" do
+      user_agent = "Mozilla/5.0 (compatible; Apple; iPhone; iOS 14.7.1)"
       detector = DeviceDetector::Parser::VendorFragment.new user_agent
       result = detector.call
-      result["vendor"].should eq "Acer"
+      result["vendor"].should eq ""
+    end
+
+    it "should handle Samsung vendor" do
+      user_agent = "Mozilla/5.0 (compatible; Samsung; Galaxy S21; Android 11)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle Google vendor" do
+      user_agent = "Mozilla/5.0 (compatible; Google; Pixel 6; Android 12)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle Huawei vendor" do
+      user_agent = "Mozilla/5.0 (compatible; Huawei; P40 Pro; Android 10)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle Xiaomi vendor" do
+      user_agent = "Mozilla/5.0 (compatible; Xiaomi; Mi 11; Android 11)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle OnePlus vendor" do
+      user_agent = "Mozilla/5.0 (compatible; OnePlus; 9 Pro; Android 11)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle LG vendor" do
+      user_agent = "Mozilla/5.0 (compatible; LG; G8 ThinQ; Android 10)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle unknown vendor gracefully" do
+      user_agent = "SomeUnknownVendor/1.0"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
+    end
+
+    it "should handle vendor fragment with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; Apple; iPhone; iOS 14.7.1)"
+      detector = DeviceDetector::Parser::VendorFragment.new user_agent
+      result = detector.call
+      result["vendor"].should eq ""
     end
   end
 end
