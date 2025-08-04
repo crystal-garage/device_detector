@@ -76,9 +76,80 @@ describe "In the parsers" do
 
   describe "BrowserEngine" do
     it "should extract engine name" do
-      user_agent = "Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36 Edge/12.0"
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       detector = DeviceDetector::Parser::BrowserEngine.new user_agent
-      detector.call["name"].should eq "Edge"
+      result = detector.call
+      result["name"].should eq "Blink"
+    end
+
+    it "should handle WebKit engine" do
+      user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "WebKit"
+    end
+
+    it "should handle Gecko engine" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "Gecko"
+    end
+
+    it "should handle Trident engine" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "Trident"
+    end
+
+    it "should handle EdgeHTML engine" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "Edge"
+    end
+
+    it "should handle Presto engine" do
+      user_agent = "Opera/9.80 (Windows NT 6.1; U; en) Presto/2.9.168 Version/11.50"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "Presto"
+    end
+
+    it "should handle Goanna engine" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Goanna/6.0 Firefox/102.0"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "Goanna"
+    end
+
+    it "should handle unknown engine gracefully" do
+      user_agent = "SomeUnknownBrowser/1.0"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle mobile browser engine" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "WebKit"
+    end
+
+    it "should handle engine with capture groups" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::BrowserEngine.new user_agent
+      result = detector.call
+      result["name"].should eq "Blink"
     end
   end
 
