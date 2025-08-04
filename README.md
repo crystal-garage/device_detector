@@ -1,6 +1,8 @@
 # Device Detector
 
 [![Crystal CI](https://github.com/mamantoha/device_detector/actions/workflows/crystal.yml/badge.svg?branch=develop)](https://github.com/mamantoha/device_detector/actions/workflows/crystal.yml)
+[![GitHub release](https://img.shields.io/github/release/crystal-garage/device_detector.svg)](https://github.com/crystal-garage/device_detector/releases)
+[![License](https://img.shields.io/github/license/crystal-garage/device_detector.svg)](https://github.com/crystal-garage/device_detector/blob/master/LICENSE)
 
 The library for parsing User Agent and browser, operating system, device used (desktop, tablet, mobile, tv, cars, console, etc.), vendor and model detection.
 
