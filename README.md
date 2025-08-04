@@ -15,7 +15,7 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   device_detector:
-    github: creadone/device_detector
+    github: crystal-garage/device_detector
 ```
 
 Then run `shards install`
@@ -131,7 +131,7 @@ crystal scripts/update_regexes.cr
 
 ## Contributing
 
-1. Fork it ( https://github.com/creadone/device_detector/fork )
+1. Fork it ( https://github.com/crystal-garage/device_detector/fork )
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
