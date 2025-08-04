@@ -13,4 +13,4 @@ license: MIT
 
 dependencies:
   baked_file_system:
-    github: creadone/baked_file_system
+    github: schovi/baked_file_system
