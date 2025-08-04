@@ -1,3 +1,3 @@
 module DeviceDetector
-  VERSION = "0.3.17"
+  VERSION = {{ `shards version #{__DIR__}`.chomp.stringify }}
 end
