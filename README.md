@@ -7,7 +7,6 @@
 The library for parsing User Agent and browser, operating system, device used (desktop, tablet, mobile, tv, cars, console, etc.), vendor and model detection.
 
 * Support latest Crystal version and update script for private use or immediately updates.
-* Currently it is production version and works fine more that 2 years.
 * The Library uses regexes from [matomo-org/device-detector](https://github.com/matomo-org/device-detector).
 
 ## Installation
@@ -31,16 +30,10 @@ user_agent = "Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, lik
 
 response = DeviceDetector::Detector.new(user_agent).call
 
-# Check if browser detected
-response.browser? #=> true
+response.browser? # => true
+response.browser.name # => "Microsoft Edge"
+response.browser.version # => "12.0"
 
-# browser name
-response.browser_name #=> Microsoft Edge
-
-# browser version
-response.browser_version #=> 12.0
-
-# get raw response with
 pp response.raw
 
 [{"bot" => {"name" => ""}},
@@ -65,30 +58,32 @@ Available methods:
 
 <table>
   <tr>
-    <td>bot?<br />bot_name</td>
-    <td>browser_engine?<br />browser_engine_name</td>
-    <td>browser?<br />browser_name<br />browser_version</td>
-    <td>camera?<br />camera_vendor<br />camera_model</td>
+    <td><strong>Bot</strong><br />bot?<br />bot.name</td>
+    <td><strong>Browser Engine</strong><br />browser_engine?<br />browser_engine.name</td>
+    <td><strong>Browser</strong><br />browser?<br />browser.name<br />browser.version</td>
+    <td><strong>Camera</strong><br />camera?<br />camera.vendor<br />camera.device</td>
   </tr>
   <tr>
-    <td>car_browser?<br />car_browser_vendor<br />car_browser_model</td>
-    <td>console?<br />console_vendor<br />console_model</td>
-    <td>feed_reader?<br />feed_reader_name<br />feed_reader_version</td>
-    <td>library?<br />library_name<br />library_version</td>
+    <td><strong>Car Browser</strong><br />car_browser?<br />car_browser.vendor<br />car_browser.model</td>
+    <td><strong>Console</strong><br />console?<br />console.vendor<br />console.model</td>
+    <td><strong>Feed Reader</strong><br />feed_reader?<br />feed_reader.name<br />feed_reader.version</td>
+    <td><strong>Library</strong><br />library?<br />library.name<br />library.version</td>
   </tr>
   <tr>
-    <td>mediaplayer?<br />mediaplayer_name<br />mediaplayer_version</td>
-    <td>mobile_app?<br />mobile_app_name<br />mobile_app_version</td>
-    <td>mobile_device?<br />mobile_device_vendor<br />mobile_device_type<br />mobile_device_model</td>
-    <td>os?<br />os_name<br />os_version</td>
+    <td><strong>Media Player</strong><br />mediaplayer?<br />mediaplayer.name<br />mediaplayer.version</td>
+    <td><strong>Mobile App</strong><br />mobile_app?<br />mobile_app.name<br />mobile_app.version</td>
+    <td><strong>Mobile</strong><br />mobile?<br />mobile.vendor<br />mobile.type<br />mobile.model</td>
+    <td><strong>OS</strong><br />os?<br />os.name<br />os.version</td>
   </tr>
   <tr>
-    <td>pim?<br />pim_name<br />pim_version</td>
-    <td>portable_media_player?<br />portable_media_player_vendor<br />portable_media_player_model</td>
-    <td>tv?<br />tv_vendor<br />tv_model</td>
-    <td>vendorfragment?<br />vendorfragment_vendor</td>
+    <td><strong>PIM</strong><br />pim?<br />pim.name<br />pim.version</td>
+    <td><strong>Portable Media Player</strong><br />portable_media_player?<br />portable_media_player.vendor<br />portable_media_player.model</td>
+    <td><strong>TV</strong><br />tv?<br />tv.vendor<br />tv.model</td>
+    <td><strong>Vendor Fragment</strong><br />vendorfragment?<br />vendorfragment.vendor</td>
   </tr>
 </table>
+
+**Note**: The old API methods (like `browser_name`, `os_version`, etc.) are deprecated.
 
 ## Benchmark
 
