@@ -124,13 +124,6 @@ crystal spec
 crystal scripts/update_regexes.cr
 ```
 
-## ToDo
-
-* Support [overloading of base rules](https://github.com/matomo-org/device-detector/issues/5962)
-* CLI & HTTP version
-* More lighter and faster the `lite` version
-* Reload regexes on the fly (may be)
-
 ## Contributing
 
 1. Fork it ( https://github.com/crystal-garage/device_detector/fork )
