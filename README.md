@@ -92,23 +92,23 @@ Available methods:
   </tr>
 </table>
 
-## Benchmarks
+## Benchmark
 
-Recent benchmarking of parsing 1000 user-agent strings on a MacBook Pro (16-inch, 2021) with Apple M1 Pro (10) @ 3.23 GHz:
-
-Crystal 1.17.1 (2025-07-22)
-
-LLVM: 20.1.8
-Default target: aarch64-apple-darwin24.5.0
-
-```
+```bash
 crystal run ./bench/raw_response.cr --release
-            user     system      total        real
-full:   1.853304   0.029943   1.883247 (  1.888252)
-lite:   0.812779   0.009052   0.821831 (  0.823737)
 ```
 
-It's mean that `device_detector` can work with 1000 / 1.89 ~ 529 QPS (full) and 1000 / 0.82 ~ 1219 QPS (lite).
+**Results:**
+
+```
+            user     system      total        real
+full:   1.645194   0.025706   1.670900 (  1.677467)
+lite:   0.766103   0.007790   0.773893 (  0.777249)
+```
+
+It's mean that `device_detector` can work with 1000 / 1.68 ~ 595 QPS (full) and 1000 / 0.78 ~ 1282 QPS (lite).
+
+*Note: This benchmark uses 20 diverse user agents including browsers, mobile devices, and bots for realistic performance measurement.*
 
 ## Testing
 
