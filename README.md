@@ -142,3 +142,4 @@ crystal scripts/update_regexes.cr
 - [@creadone](https://github.com/creadone) Sergey Fedorov - creator, maintainer
 - [@delef](https://github.com/delef) Ivan Palamarchuk - new api, code optimization
 - [@zaycker](https://github.com/zaycker) Yuriy Zaitsev - fix check order
+- [@mamantoha](https://github.com/mamantoha) Anton Maminov - maintainer
