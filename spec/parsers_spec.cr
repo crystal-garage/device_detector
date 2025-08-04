@@ -265,12 +265,88 @@ describe "In the parsers" do
   end
 
   describe "MobileApp" do
-    it "should extract name and version" do
-      user_agent = "WhatsApp/2.6.4 iPhone_OS/4.3.3 Device/iPhone_4"
+    it "should extract app name" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram/123.0.0.21.114"
       detector = DeviceDetector::Parser::MobileApp.new user_agent
       result = detector.call
-      result["name"].should eq("WhatsApp")
-      result["version"].should eq("2.6.4")
+      result["name"].should eq "Instagram"
+    end
+
+    it "should handle Facebook app" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 FBAV/123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "Facebook"
+    end
+
+    it "should handle WhatsApp app" do
+      user_agent = "WhatsApp/2.19.81 A"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "WhatsApp"
+    end
+
+    it "should handle TikTok app" do
+      user_agent = "musical_ly_123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "TikTok"
+    end
+
+    it "should handle YouTube app" do
+      user_agent = "com.google.android.youtube/123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "YouTube"
+    end
+
+    it "should handle Twitter app" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Twitter/123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "Twitter"
+    end
+
+    it "should handle LinkedIn app" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 LinkedIn/123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "LinkedIn"
+    end
+
+    it "should handle Snapchat app" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Snapchat/123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "Snapchat"
+    end
+
+    it "should handle unknown app gracefully" do
+      user_agent = "SomeUnknownApp/1.0"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle regular mobile browser" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle app with capture groups" do
+      user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram/123.0.0.21.114"
+      detector = DeviceDetector::Parser::MobileApp.new user_agent
+      result = detector.call
+      result["name"].should eq "Instagram"
     end
   end
 
