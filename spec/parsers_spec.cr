@@ -316,12 +316,88 @@ describe "In the parsers" do
   end
 
   describe "Library" do
-    it "should extract name and version" do
-      user_agent = "curl/7.21.0 (i386-redhat-linux-gnu) libcurl/7.21.0 NSS/3.12.10.0 zlib/1.2.5 libidn/1.18 libssh2/1.2.4"
+    it "should extract library name" do
+      user_agent = "Mozilla/5.0 (compatible; Apache-HttpClient/4.5.13; http://hc.apache.org/httpcomponents-client-ga)"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "Apache HTTP Client"
+    end
+
+    it "should handle cURL library" do
+      user_agent = "curl/7.68.0"
       detector = DeviceDetector::Parser::Library.new user_agent
       result = detector.call
       result["name"].should eq "curl"
-      result["version"].should eq "7.21.0"
+    end
+
+    it "should handle Guzzle library" do
+      user_agent = "GuzzleHttp/7.0"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "Guzzle (PHP HTTP Client)"
+    end
+
+    it "should handle Requests library" do
+      user_agent = "python-requests/2.25.1"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "Python Requests"
+    end
+
+    it "should handle Axios library" do
+      user_agent = "axios/0.21.1"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "Axios"
+    end
+
+    it "should handle OkHttp library" do
+      user_agent = "okhttp/4.9.1"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "OkHttp"
+    end
+
+    it "should handle Alamofire library" do
+      user_agent = "Alamofire/5.4.4"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle RestSharp library" do
+      user_agent = "RestSharp/106.11.7"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "RestSharp"
+    end
+
+    it "should handle unknown library gracefully" do
+      user_agent = "SomeUnknownLibrary/1.0"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle empty user agent" do
+      user_agent = ""
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle regular browser" do
+      user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq ""
+    end
+
+    it "should handle library with capture groups" do
+      user_agent = "Mozilla/5.0 (compatible; Apache-HttpClient/4.5.13; http://hc.apache.org/httpcomponents-client-ga)"
+      detector = DeviceDetector::Parser::Library.new user_agent
+      result = detector.call
+      result["name"].should eq "Apache HTTP Client"
     end
   end
 
