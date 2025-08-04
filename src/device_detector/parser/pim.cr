@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "pim"
-    @@pims = Array(PIM).from_yaml(Storage.get("pim.yml"))
+    @@pims : Array(PIM)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -14,12 +14,11 @@ module DeviceDetector::Parser
 
       property regex : String
       property name : String
-      property version : String
+      property version : String?
     end
 
     def pims
-      return @@pims if @@pims
-      @@pims = Array(PIM).from_yaml(Storage.get("pim.yml"))
+      @@pims ||= Array(PIM).from_yaml(Storage.get("client/pim.yml"))
     end
 
     def call
@@ -27,11 +26,13 @@ module DeviceDetector::Parser
       pims.reverse_each do |pim|
         if Regex.new(pim.regex, Setting::REGEX_OPTS) =~ @user_agent
           detected_pim.merge!({"name" => pim.name})
-          if capture_groups?(pim.version)
-            version = fill_groups(pim.version, pim.regex, @user_agent)
-            detected_pim.merge!({"version" => version})
-          else
-            detected_pim.merge!({"version" => pim.version})
+          if version = pim.version
+            if capture_groups?(version)
+              version = fill_groups(version, pim.regex, @user_agent)
+              detected_pim.merge!({"version" => version})
+            else
+              detected_pim.merge!({"version" => version})
+            end
           end
         end
       end

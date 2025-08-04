@@ -103,8 +103,8 @@ Default target: x86_64-apple-macosx
 ```
 crystal run ./bench/raw_response.cr --release
             user     system      total        real
-full:   41.125270   2.457481   43.582751 (  44.714081)
-lite:   25.293438   1.403468   26.696906 (  26.829565)
+full:   35.575551   1.954706   37.530257 (  37.776562)
+lite:   22.596066   1.167576   23.763642 (  24.030802)
 ```
 
 It's mean that `device_detector` can work with 1000 / 5.9 ~ 169 QPS.

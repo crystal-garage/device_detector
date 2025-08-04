@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "portable_media_player"
-    @@media_players = Hash(String, SingleModelPlayer | MultiModelPlayer).from_yaml(Storage.get("portable_media_player.yml"))
+    @@media_players : Hash(String, SingleModelPlayer | MultiModelPlayer)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -26,8 +26,7 @@ module DeviceDetector::Parser
     end
 
     def media_players
-      return @@media_players if @@media_players
-      @@media_players = Hash(String, SingleModelPlayer | MultiModelPlayer).from_yaml(Storage.get("portable_media_player.yml"))
+      @@media_players ||= Hash(String, SingleModelPlayer | MultiModelPlayer).from_yaml(Storage.get("device/portable_media_player.yml"))
     end
 
     def call

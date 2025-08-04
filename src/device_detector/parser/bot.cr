@@ -23,7 +23,7 @@ module DeviceDetector::Parser
     def call
       detected_bot = {"name" => ""}
       bots.reverse_each do |bot|
-        if Regex.new(bot.regex, Setting::REGEX_OPTS) =~ @user_agent
+        if RegexCache.get(bot.regex) =~ @user_agent
           detected_bot.merge!({"name" => bot.name})
         end
       end

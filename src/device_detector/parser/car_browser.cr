@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "car_browser"
-    @@car_browsers = Hash(String, MultiModelBrowser | SingleModelBrowser).from_yaml(Storage.get("car_browsers.yml"))
+    @@car_browsers : Hash(String, MultiModelBrowser | SingleModelBrowser)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -35,8 +35,7 @@ module DeviceDetector::Parser
     end
 
     def car_browsers
-      return @@car_browsers if @@car_browsers
-      @@car_browsers = Hash(String, MultiModelBrowser | SingleModelBrowser).from_yaml(Storage.get("car_browsers.yml"))
+      @@car_browsers ||= Hash(String, MultiModelBrowser | SingleModelBrowser).from_yaml(Storage.get("device/car_browsers.yml"))
     end
 
     def call

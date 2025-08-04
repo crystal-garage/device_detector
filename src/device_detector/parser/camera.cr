@@ -3,7 +3,7 @@ module DeviceDetector::Parser
     include Helper
 
     getter kind = "camera"
-    @@cameras = Hash(String, SingleModel | MultiModel).from_yaml(Storage.get("cameras.yml"))
+    @@cameras : Hash(String, SingleModel | MultiModel)?
 
     def initialize(user_agent : String)
       @user_agent = user_agent
@@ -28,8 +28,7 @@ module DeviceDetector::Parser
     end
 
     def cameras
-      return @@cameras if @@cameras
-      @@cameras = Hash(String, SingleModel | MultiModel).from_yaml(Storage.get("cameras.yml"))
+      @@cameras ||= Hash(String, SingleModel | MultiModel).from_yaml(Storage.get("device/cameras.yml"))
     end
 
     def call
