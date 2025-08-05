@@ -21,12 +21,27 @@ describe "Response" do
   end
 
   describe "Bot" do
-    user_agent = "Googlebot (gocrawl v0.4)"
+    user_agent = "Google Search Console"
     response = DeviceDetector::Detector.new(user_agent).call
 
     it "should return true if bot detected" { response.bot?.should be_true }
+
     it "should return bot name" do
-      response.bot.name.should eq("Googlebot")
+      response.bot.name.should eq("Google Search Console")
+    end
+
+    it "should return bot url" do
+      response.bot.url.should eq("https://search.google.com/search-console/about")
+    end
+
+    it "should return true if bot producer name is present" do
+      response.bot.producer.name?.should be_true
+      response.bot.producer.name.should eq("Google Inc.")
+    end
+
+    it "should return true if bot producer url is present" do
+      response.bot.producer.url?.should be_true
+      response.bot.producer.url.should eq("https://www.google.com/")
     end
   end
 
@@ -148,15 +163,15 @@ describe "Response" do
     user_agent = "Mozilla/5.0 (Linux; Android 7.0; BV6000 Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 YaBrowser/17.1.1.359.00 Mobile Safari/537.36"
     response = DeviceDetector::Detector.new(user_agent).call
 
-    it "should return true if mobile device detected" { response.mobile_device?.should be_true }
-    it "should return vendor" do
-      response.mobile_device.vendor.should eq "Blackview"
+    it "should return true if mobile device detected" { response.mobile?.should be_true }
+    it "should return mobile device vendor" do
+      response.mobile.vendor.should eq "Blackview"
     end
-    it "should return type" do
-      response.mobile_device.type.should eq "smartphone"
+    it "should return mobile device type" do
+      response.mobile.type.should eq "smartphone"
     end
-    it "should return model" do
-      response.mobile_device.model.should eq "BV6000"
+    it "should return mobile device model" do
+      response.mobile.model.should eq "BV6000"
     end
   end
 

@@ -17,7 +17,7 @@ module DeviceDetector
     end
 
     ENTITIES = {
-      bot:                   ["name"],
+      bot:                   ["name", "category", "url", {producer: ["name", "url"]}],
       browser:               ["name", "version"],
       browser_engine:        ["name"],
       camera:                ["device", "vendor"],
@@ -42,14 +42,40 @@ module DeviceDetector
         def initialize(@section : Hash(String, String))
         end
 
-        {% for key, index in keys %}
-          def {{key.id}}? : Bool
-            @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?
-          end
+        {% for key in keys %}
+          {% if key.is_a?(NamedTupleLiteral) %}
+            {% for nested_key, nested_values in key %}
+              {% nested_class_name = nested_key.stringify.camelcase %}
+              {% instance_method_name = nested_key.id %}
 
-          def {{key.id}} : String?
-            @section[{{key}}]?
-          end
+              class {{nested_class_name.id}}
+                def initialize(@section : Hash(String, String))
+                end
+
+                {% for nested_value in nested_values %}
+                  def {{nested_value.id}}? : Bool
+                    @section.has_key?("{{nested_key.id}}_{{nested_value.id}}") && !@section["{{nested_key.id}}_{{nested_value.id}}"].try &.blank?
+                  end
+
+                  def {{nested_value.id}} : String?
+                    @section["{{nested_key.id}}_{{nested_value.id}}"]?
+                  end
+                {% end %}
+              end
+
+              def {{instance_method_name.id}} : {{nested_class_name.id}}
+                {{nested_class_name.id}}.new(@section)
+              end
+            {% end %}
+          {% elsif key.is_a?(StringLiteral) %}
+            def {{key.id}}? : Bool
+              @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?
+            end
+
+            def {{key.id}} : String?
+              @section[{{key}}]?
+            end
+          {% end %}
         {% end %}
       end
 
@@ -72,46 +98,7 @@ module DeviceDetector
 
         {{class_name.id}}.new({} of String => String)
       end
-
-      # Old API support (DEPRECATED)
-      {% for key, index in keys %}
-        @[Deprecated("Use `{{entity_name.id}}.{{key.id}}` instead")]
-        def {{entity_name.id}}_{{key.id}}
-          {{entity_name.id}}.{{key.id}}
-        end
-      {% end %}
     {% end %}
-
-    # Old API support (DEPRECATED)
-    @[Deprecated("Use `camera.device` instead")]
-    def camera_model
-      camera.device
-    end
-
-    @[Deprecated("Use `mobile?` instead")]
-    def mobile_device?
-      mobile?
-    end
-
-    @[Deprecated("Use `mobile` instead")]
-    def mobile_device
-      mobile
-    end
-
-    @[Deprecated("Use `mobile.vendor` instead")]
-    def mobile_device_vendor
-      mobile.vendor
-    end
-
-    @[Deprecated("Use `mobile.type` instead")]
-    def mobile_device_type
-      mobile.type
-    end
-
-    @[Deprecated("Use `mobile.model` instead")]
-    def mobile_device_model
-      mobile.model
-    end
 
     # `to.click` related method
     def traffic_type

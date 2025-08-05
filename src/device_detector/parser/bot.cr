@@ -3,8 +3,14 @@ module DeviceDetector::Parser
     getter kind = "bot"
     @@bots : Array(Bot)?
 
-    def initialize(user_agent : String)
-      @user_agent = user_agent
+    def initialize(@user_agent : String)
+    end
+
+    struct Producer
+      include YAML::Serializable
+
+      property name : String
+      property url : String?
     end
 
     struct Bot
@@ -13,6 +19,8 @@ module DeviceDetector::Parser
       property regex : String
       property name : String
       property category : String?
+      property url : String?
+      property producer : Producer?
     end
 
     def bots
@@ -20,10 +28,16 @@ module DeviceDetector::Parser
     end
 
     def call
-      detected_bot = {"name" => ""}
+      detected_bot = {"name" => "", "category" => "", "url" => "", "producer_name" => "", "producer_url" => ""}
       bots.reverse_each do |bot|
         if RegexCache.get(bot.regex) =~ @user_agent
-          detected_bot.merge!({"name" => bot.name})
+          detected_bot["name"] = bot.name
+          detected_bot["category"] = bot.category.to_s if bot.category
+          detected_bot["url"] = bot.url.to_s if bot.url
+          if producer = bot.producer
+            detected_bot["producer_name"] = producer.name
+            detected_bot["producer_url"] = producer.url.to_s if producer.url
+          end
         end
       end
       detected_bot
