@@ -94,8 +94,6 @@ Available methods:
   </tr>
 </table>
 
-**Note**: The old API methods (like `browser_name`, `os_version`, etc.) are deprecated.
-
 ## Benchmark
 
 ```bash
