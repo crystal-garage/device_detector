@@ -154,15 +154,15 @@ describe "Response" do
     user_agent = "Mozilla/5.0 (Linux; Android 7.0; BV6000 Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 YaBrowser/17.1.1.359.00 Mobile Safari/537.36"
     response = DeviceDetector::Detector.new(user_agent).call
 
-    it "should return true if mobile device detected" { response.mobile_device?.should be_true }
-    it "should return vendor" do
-      response.mobile_device.vendor.should eq "Blackview"
+    it "should return true if mobile device detected" { response.mobile?.should be_true }
+    it "should return mobile device vendor" do
+      response.mobile.vendor.should eq "Blackview"
     end
-    it "should return type" do
-      response.mobile_device.type.should eq "smartphone"
+    it "should return mobile device type" do
+      response.mobile.type.should eq "smartphone"
     end
-    it "should return model" do
-      response.mobile_device.model.should eq "BV6000"
+    it "should return mobile device model" do
+      response.mobile.model.should eq "BV6000"
     end
   end
 

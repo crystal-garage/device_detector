@@ -96,63 +96,7 @@ module DeviceDetector
 
         {{class_name.id}}.new({} of String => String)
       end
-
-      # Old API support (DEPRECATED)
-      {% for key, index in keys %}
-        {% if key.is_a?(StringLiteral) %}
-          @[Deprecated("Use `{{entity_name.id}}.{{key.id}}` instead")]
-          def {{entity_name.id}}_{{key.id}}
-            {{entity_name.id}}.{{key.id}}
-          end
-        {% end %}
-      {% end %}
     {% end %}
-
-    # Custom bot producer method
-    def bot_producer : Producer
-      @results.each do |result|
-        if result.has_key?("bot")
-          bot_data = result["bot"]
-          if bot_data.has_key?("producer_name") && !bot_data["producer_name"].blank?
-            producer_data = {"name" => bot_data["producer_name"], "url" => bot_data["producer_url"]? || ""}
-            return Producer.new(producer_data)
-          end
-        end
-      end
-
-      Producer.new({} of String => String)
-    end
-
-    # Old API support (DEPRECATED)
-    @[Deprecated("Use `camera.device` instead")]
-    def camera_model
-      camera.device
-    end
-
-    @[Deprecated("Use `mobile?` instead")]
-    def mobile_device?
-      mobile?
-    end
-
-    @[Deprecated("Use `mobile` instead")]
-    def mobile_device
-      mobile
-    end
-
-    @[Deprecated("Use `mobile.vendor` instead")]
-    def mobile_device_vendor
-      mobile.vendor
-    end
-
-    @[Deprecated("Use `mobile.type` instead")]
-    def mobile_device_type
-      mobile.type
-    end
-
-    @[Deprecated("Use `mobile.model` instead")]
-    def mobile_device_model
-      mobile.model
-    end
 
     # `to.click` related method
     def traffic_type
