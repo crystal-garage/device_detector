@@ -65,13 +65,15 @@ module DeviceDetector
         end
 
         {% for key, index in keys %}
-          def {{key.id}}? : Bool
-            @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?
-          end
+          {% if key.is_a?(StringLiteral) %}
+            def {{key.id}}? : Bool
+              @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?
+            end
 
-          def {{key.id}} : String?
-            @section[{{key}}]?
-          end
+            def {{key.id}} : String?
+              @section[{{key}}]?
+            end
+          {% end %}
         {% end %}
 
         # Custom producer method for Bot
@@ -109,10 +111,12 @@ module DeviceDetector
 
       # Old API support (DEPRECATED)
       {% for key, index in keys %}
-        @[Deprecated("Use `{{entity_name.id}}.{{key.id}}` instead")]
-        def {{entity_name.id}}_{{key.id}}
-          {{entity_name.id}}.{{key.id}}
-        end
+        {% if key.is_a?(StringLiteral) %}
+          @[Deprecated("Use `{{entity_name.id}}.{{key.id}}` instead")]
+          def {{entity_name.id}}_{{key.id}}
+            {{entity_name.id}}.{{key.id}}
+          end
+        {% end %}
       {% end %}
     {% end %}
 
