@@ -17,7 +17,7 @@ module DeviceDetector
     end
 
     ENTITIES = {
-      bot:                   ["name", "category", "url", "producer_name", "producer_url"],
+      bot:                   ["name", "category", "url", {producer: ["name", "url"]}],
       browser:               ["name", "version"],
       browser_engine:        ["name"],
       camera:                ["device", "vendor"],
@@ -35,28 +35,6 @@ module DeviceDetector
       vendorfragment:        ["vendor"],
     }
 
-    # Custom Producer class for bot
-    class Producer
-      def initialize(@section : Hash(String, String))
-      end
-
-      def name? : Bool
-        @section.has_key?("name") && !@section["name"].try &.blank?
-      end
-
-      def name : String?
-        @section["name"]?
-      end
-
-      def url? : Bool
-        @section.has_key?("url") && !@section["url"].try &.blank?
-      end
-
-      def url : String?
-        @section["url"]?
-      end
-    end
-
     {% for entity_name, keys in ENTITIES %}
       {% class_name = entity_name.stringify.camelcase %}
 
@@ -64,8 +42,30 @@ module DeviceDetector
         def initialize(@section : Hash(String, String))
         end
 
-        {% for key, index in keys %}
-          {% if key.is_a?(StringLiteral) %}
+        {% for key in keys %}
+          {% if key.is_a?(NamedTupleLiteral) %}
+            {% nested_class_name = key.keys.first.stringify.camelcase %}
+            {% instance_method_name = key.keys.first.id %}
+
+            class {{nested_class_name.id}}
+              def initialize(@section : Hash(String, String))
+              end
+
+              {% for nested_key in key.values.first %}
+                def {{nested_key.id}}? : Bool
+                  @section.has_key?({{nested_key}}) && !@section[{{nested_key}}].try &.blank?
+                end
+
+                def {{nested_key.id}} : String?
+                  @section["{{nested_key.id}}"]?
+                end
+              {% end %}
+            end
+
+            def {{instance_method_name.id}} : {{nested_class_name.id}}
+              {{nested_class_name.id}}.new(@section)
+            end
+          {% elsif key.is_a?(StringLiteral) %}
             def {{key.id}}? : Bool
               @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?
             end
@@ -74,18 +74,6 @@ module DeviceDetector
               @section[{{key}}]?
             end
           {% end %}
-        {% end %}
-
-        # Custom producer method for Bot
-        {% if entity_name == :bot %}
-          def producer : Producer
-            if @section.has_key?("producer_name") && !@section["producer_name"].blank?
-              producer_data = {"name" => @section["producer_name"], "url" => @section["producer_url"]? || ""}
-              Producer.new(producer_data)
-            else
-              Producer.new({} of String => String)
-            end
-          end
         {% end %}
       end
 
