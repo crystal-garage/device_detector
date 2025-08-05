@@ -44,27 +44,29 @@ module DeviceDetector
 
         {% for key in keys %}
           {% if key.is_a?(NamedTupleLiteral) %}
-            {% nested_class_name = key.keys.first.stringify.camelcase %}
-            {% instance_method_name = key.keys.first.id %}
+            {% for nested_key, nested_values in key %}
+              {% nested_class_name = nested_key.stringify.camelcase %}
+              {% instance_method_name = nested_key.id %}
 
-            class {{nested_class_name.id}}
-              def initialize(@section : Hash(String, String))
+              class {{nested_class_name.id}}
+                def initialize(@section : Hash(String, String))
+                end
+
+                {% for nested_value in nested_values %}
+                  def {{nested_value.id}}? : Bool
+                    @section.has_key?("{{nested_key.id}}_{{nested_value.id}}") && !@section["{{nested_key.id}}_{{nested_value.id}}"].try &.blank?
+                  end
+
+                  def {{nested_value.id}} : String?
+                    @section["{{nested_key.id}}_{{nested_value.id}}"]?
+                  end
+                {% end %}
               end
 
-              {% for nested_key in key.values.first %}
-                def {{nested_key.id}}? : Bool
-                  @section.has_key?({{nested_key}}) && !@section[{{nested_key}}].try &.blank?
-                end
-
-                def {{nested_key.id}} : String?
-                  @section["{{key.keys.first.id}}_{{nested_key.id}}"]?
-                end
-              {% end %}
-            end
-
-            def {{instance_method_name.id}} : {{nested_class_name.id}}
-              {{nested_class_name.id}}.new(@section)
-            end
+              def {{instance_method_name.id}} : {{nested_class_name.id}}
+                {{nested_class_name.id}}.new(@section)
+              end
+            {% end %}
           {% elsif key.is_a?(StringLiteral) %}
             def {{key.id}}? : Bool
               @section.has_key?({{key}}) && !@section[{{key}}].try &.blank?

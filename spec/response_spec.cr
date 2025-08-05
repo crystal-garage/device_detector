@@ -21,17 +21,26 @@ describe "Response" do
   end
 
   describe "Bot" do
-    user_agent = "Googlebot (gocrawl v0.4)"
+    user_agent = "Google Search Console"
     response = DeviceDetector::Detector.new(user_agent).call
 
     it "should return true if bot detected" { response.bot?.should be_true }
+
     it "should return bot name" do
-      response.bot.name.should eq("Googlebot")
+      response.bot.name.should eq("Google Search Console")
     end
-    it "should return bot producer name" do
+
+    it "should return bot url" do
+      response.bot.url.should eq("https://search.google.com/search-console/about")
+    end
+
+    it "should return true if bot producer name is present" do
+      response.bot.producer.name?.should be_true
       response.bot.producer.name.should eq("Google Inc.")
     end
-    it "should return bot producer url" do
+
+    it "should return true if bot producer url is present" do
+      response.bot.producer.url?.should be_true
       response.bot.producer.url.should eq("https://www.google.com/")
     end
   end
