@@ -58,28 +58,34 @@ Available methods:
 
 <table>
   <tr>
-    <td><strong>Bot</strong><br />bot?<br />bot.name</td>
+    <td><strong>Bot</strong><br />bot?<br />bot.name<br />bot.category<br />bot.url<br />bot.producer.name<br />bot.producer.url</td>
     <td><strong>Browser Engine</strong><br />browser_engine?<br />browser_engine.name</td>
     <td><strong>Browser</strong><br />browser?<br />browser.name<br />browser.version</td>
-    <td><strong>Camera</strong><br />camera?<br />camera.vendor<br />camera.device</td>
   </tr>
   <tr>
-    <td><strong>Car Browser</strong><br />car_browser?<br />car_browser.vendor<br />car_browser.model</td>
-    <td><strong>Console</strong><br />console?<br />console.vendor<br />console.model</td>
+    <td><strong>Camera</strong><br />camera?<br />camera.device<br />camera.vendor</td>
+    <td><strong>Car Browser</strong><br />car_browser?<br />car_browser.model<br />car_browser.vendor</td>
+    <td><strong>Console</strong><br />console?<br />console.model<br />console.vendor</td>
+  </tr>
+  <tr>
     <td><strong>Feed Reader</strong><br />feed_reader?<br />feed_reader.name<br />feed_reader.version</td>
     <td><strong>Library</strong><br />library?<br />library.name<br />library.version</td>
+    <td><strong>Media Player</strong><br />mediaplayer?<br />mediaplayer.name<br />mediaplayer.version</td>
   </tr>
   <tr>
-    <td><strong>Media Player</strong><br />mediaplayer?<br />mediaplayer.name<br />mediaplayer.version</td>
     <td><strong>Mobile App</strong><br />mobile_app?<br />mobile_app.name<br />mobile_app.version</td>
     <td><strong>Mobile</strong><br />mobile?<br />mobile.vendor<br />mobile.type<br />mobile.model</td>
     <td><strong>OS</strong><br />os?<br />os.name<br />os.version</td>
   </tr>
   <tr>
     <td><strong>PIM</strong><br />pim?<br />pim.name<br />pim.version</td>
-    <td><strong>Portable Media Player</strong><br />portable_media_player?<br />portable_media_player.vendor<br />portable_media_player.model</td>
-    <td><strong>TV</strong><br />tv?<br />tv.vendor<br />tv.model</td>
+    <td><strong>Portable Media Player</strong><br />portable_media_player?<br />portable_media_player.model<br />portable_media_player.vendor</td>
+    <td><strong>TV</strong><br />tv?<br />tv.model<br />tv.vendor</td>
+  </tr>
+  <tr>
     <td><strong>Vendor Fragment</strong><br />vendorfragment?<br />vendorfragment.vendor</td>
+    <td></td>
+    <td></td>
   </tr>
 </table>
 

@@ -17,7 +17,7 @@ module DeviceDetector
     end
 
     ENTITIES = {
-      bot:                   ["name"],
+      bot:                   ["name", "category", "url", "producer_name", "producer_url"],
       browser:               ["name", "version"],
       browser_engine:        ["name"],
       camera:                ["device", "vendor"],
@@ -35,6 +35,28 @@ module DeviceDetector
       vendorfragment:        ["vendor"],
     }
 
+    # Custom Producer class for bot
+    class Producer
+      def initialize(@section : Hash(String, String))
+      end
+
+      def name? : Bool
+        @section.has_key?("name") && !@section["name"].try &.blank?
+      end
+
+      def name : String?
+        @section["name"]?
+      end
+
+      def url? : Bool
+        @section.has_key?("url") && !@section["url"].try &.blank?
+      end
+
+      def url : String?
+        @section["url"]?
+      end
+    end
+
     {% for entity_name, keys in ENTITIES %}
       {% class_name = entity_name.stringify.camelcase %}
 
@@ -49,6 +71,18 @@ module DeviceDetector
 
           def {{key.id}} : String?
             @section[{{key}}]?
+          end
+        {% end %}
+
+        # Custom producer method for Bot
+        {% if entity_name == :bot %}
+          def producer : Producer
+            if @section.has_key?("producer_name") && !@section["producer_name"].blank?
+              producer_data = {"name" => @section["producer_name"], "url" => @section["producer_url"]? || ""}
+              Producer.new(producer_data)
+            else
+              Producer.new({} of String => String)
+            end
           end
         {% end %}
       end
@@ -81,6 +115,21 @@ module DeviceDetector
         end
       {% end %}
     {% end %}
+
+    # Custom bot producer method
+    def bot_producer : Producer
+      @results.each do |result|
+        if result.has_key?("bot")
+          bot_data = result["bot"]
+          if bot_data.has_key?("producer_name") && !bot_data["producer_name"].blank?
+            producer_data = {"name" => bot_data["producer_name"], "url" => bot_data["producer_url"]? || ""}
+            return Producer.new(producer_data)
+          end
+        end
+      end
+
+      Producer.new({} of String => String)
+    end
 
     # Old API support (DEPRECATED)
     @[Deprecated("Use `camera.device` instead")]

@@ -28,6 +28,9 @@ describe "Response" do
     it "should return bot name" do
       response.bot.name.should eq("Googlebot")
     end
+    it "should return bot producer name" do
+      response.bot.producer.name.should eq("Google Inc.")
+    end
   end
 
   describe "BrowserEngine" do
