@@ -36,7 +36,12 @@ response.browser.version # => "12.0"
 
 pp response.raw
 
-[{"bot" => {"name" => ""}},
+[{"bot" =>
+   {"name" => "",
+    "category" => "",
+    "url" => "",
+    "producer_name" => "",
+    "producer_url" => ""}},
  {"browser" => {"name" => "Microsoft Edge", "version" => "12.0"}},
  {"browser_engine" => {"name" => "Edge"}},
  {"camera" => {"vendor" => "", "model" => "", "device" => ""}},
