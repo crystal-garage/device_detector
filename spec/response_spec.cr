@@ -31,6 +31,9 @@ describe "Response" do
     it "should return bot producer name" do
       response.bot.producer.name.should eq("Google Inc.")
     end
+    it "should return bot producer url" do
+      response.bot.producer.url.should eq("https://www.google.com/")
+    end
   end
 
   describe "BrowserEngine" do

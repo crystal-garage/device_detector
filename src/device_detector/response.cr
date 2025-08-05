@@ -57,7 +57,7 @@ module DeviceDetector
                 end
 
                 def {{nested_key.id}} : String?
-                  @section["{{nested_key.id}}"]?
+                  @section["{{key.keys.first.id}}_{{nested_key.id}}"]?
                 end
               {% end %}
             end
